@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TaskActivity extends AppCompatActivity
+public class TasksActivity extends AppCompatActivity
 		implements NavigationView.OnNavigationItemSelectedListener {
 
 	private static final Level LOGGING_LEVEL = Level.OFF;
@@ -112,7 +112,7 @@ public class TaskActivity extends AppCompatActivity
 		runOnUiThread(new Runnable() {
 			public void run() {
 				Dialog dialog =
-						GooglePlayServicesUtil.getErrorDialog(connectionStatusCode, TaskActivity.this,
+						GooglePlayServicesUtil.getErrorDialog(connectionStatusCode, TasksActivity.this,
 								REQUEST_GOOGLE_PLAY_SERVICES);
 				dialog.show();
 			}

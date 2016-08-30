@@ -16,11 +16,11 @@ import java.io.IOException;
  */
 abstract class CommonAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
-	final TaskActivity activity;
+	final TasksActivity activity;
 	final com.google.api.services.tasks.Tasks client;
 	private final View progressBar;
 
-	CommonAsyncTask(TaskActivity activity) {
+	CommonAsyncTask(TasksActivity activity) {
 		this.activity = activity;
 		client = activity.service;
 		progressBar = activity.findViewById(R.id.title_refresh_progress);
@@ -43,9 +43,9 @@ abstract class CommonAsyncTask extends AsyncTask<Void, Void, Boolean> {
 					availabilityException.getConnectionStatusCode());
 		} catch (UserRecoverableAuthIOException userRecoverableException) {
 			activity.startActivityForResult(
-					userRecoverableException.getIntent(), TaskActivity.REQUEST_AUTHORIZATION);
+					userRecoverableException.getIntent(), TasksActivity.REQUEST_AUTHORIZATION);
 		} catch (IOException e) {
-			Utils.logAndShow(activity, TaskActivity.TAG, e);
+			Utils.logAndShow(activity, TasksActivity.TAG, e);
 		}
 		return false;
 	}
