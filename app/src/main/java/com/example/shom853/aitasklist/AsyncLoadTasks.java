@@ -11,26 +11,27 @@ import java.util.List;
  */
 class AsyncLoadTasks extends CommonAsyncTask {
 
-	AsyncLoadTasks(TasksActivity tasksSample) {
+	String listID;
+
+	AsyncLoadTasks(TasksActivity tasksSample, String listID) {
 		super(tasksSample);
+		this.listID = listID;
 	}
 
 	@Override
 	protected void doInBackground() throws IOException {
-		List<String> result = new ArrayList<String>();
+		List<Task> result = new ArrayList<>();
 		List<Task> tasks =
-				client.tasks().list("@default").setFields("items/title").execute().getItems();
+				client.tasks().list(listID).execute().getItems();
 		if (tasks != null) {
 			for (Task task : tasks) {
-				result.add(task.getTitle());
+				result.add(task);
 			}
-		} else {
-			result.add("No tasks.");
 		}
 		activity.tasksList = result;
 	}
 
-	static void run(TasksActivity tasksSample) {
-		new AsyncLoadTasks(tasksSample).execute();
+	static void run(TasksActivity tasksSample, String listID) {
+		new AsyncLoadTasks(tasksSample, listID).execute();
 	}
 }

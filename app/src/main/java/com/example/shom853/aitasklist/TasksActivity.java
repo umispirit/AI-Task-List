@@ -39,48 +39,42 @@ public class TasksActivity extends AppCompatActivity
 		implements NavigationView.OnNavigationItemSelectedListener {
 
 	private static final Level LOGGING_LEVEL = Level.OFF;
-
 	private static final String PREF_ACCOUNT_NAME = "accountName";
-
 	static final String TAG = "TasksSample";
 
 	static final int REQUEST_GOOGLE_PLAY_SERVICES = 0;
-
 	static final int REQUEST_AUTHORIZATION = 1;
-
 	static final int REQUEST_ACCOUNT_PICKER = 2;
-
 	static final int REQUEST_TASK_EDIT= 3;
 
 	final HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
-
 	final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
-
 	GoogleAccountCredential credential;
 
-	List<String> tasksList;
-
-	ArrayAdapter<String> adapter;
-
+	List<Task> tasksList;
+	TaskItemAdapter adapter;
 	com.google.api.services.tasks.Tasks service;
-
 	int numAsyncTasks;
-
 	private ListView listView;
+
+	String currentListID;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// enable logging
 		Logger.getLogger("com.google.api.client").setLevel(LOGGING_LEVEL);
+
 		// view and menu
 		setContentView(R.layout.activity_task);
 		listView = (ListView) findViewById(R.id.list);
+
 		// Google Accounts
 		credential =
 				GoogleAccountCredential.usingOAuth2(this, Collections.singleton(TasksScopes.TASKS));
 		SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
 		credential.setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
+
 		// Tasks client
 		service =
 				new com.google.api.services.tasks.Tasks.Builder(httpTransport, jsonFactory, credential)
@@ -89,6 +83,7 @@ public class TasksActivity extends AppCompatActivity
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
+		// setup FAB
 		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -98,6 +93,7 @@ public class TasksActivity extends AppCompatActivity
 			}
 		});
 
+		// setup Navigation Drawer
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 				this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -106,6 +102,20 @@ public class TasksActivity extends AppCompatActivity
 
 		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 		navigationView.setNavigationItemSelectedListener(this);
+
+		// get saved data
+		// currently not saving data and using default list
+
+//		if(savedInstanceState != null){
+//			listID = savedInstanceState.getString(TASKLIST_ID);
+//			accountEmail = savedInstanceState.getString(ACCOUNT_EMAIL);
+//			listIndex = savedInstanceState.getInt(TASKLIST_INDEX);
+//		}
+//		else{
+			currentListID = "@default";
+//			accountEmail = "android.studio@android.com";
+//			listIndex = 0;
+//		}
 	}
 
 	void showGooglePlayServicesAvailabilityErrorDialog(final int connectionStatusCode) {
@@ -120,7 +130,7 @@ public class TasksActivity extends AppCompatActivity
 	}
 
 	void refreshView() {
-		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tasksList);
+		adapter = new TaskItemAdapter(this, tasksList);
 		listView.setAdapter(adapter);
 	}
 
@@ -145,7 +155,7 @@ public class TasksActivity extends AppCompatActivity
 				break;
 			case REQUEST_AUTHORIZATION:
 				if (resultCode == Activity.RESULT_OK) {
-					AsyncLoadTasks.run(this);
+					AsyncLoadTasks.run(this, currentListID);
 				} else {
 					chooseAccount();
 				}
@@ -159,7 +169,7 @@ public class TasksActivity extends AppCompatActivity
 						SharedPreferences.Editor editor = settings.edit();
 						editor.putString(PREF_ACCOUNT_NAME, accountName);
 						editor.commit();
-						AsyncLoadTasks.run(this);
+						AsyncLoadTasks.run(this, currentListID);
 					}
 				}
 				break;
@@ -183,7 +193,7 @@ public class TasksActivity extends AppCompatActivity
 			chooseAccount();
 		} else {
 			// load calendars
-			AsyncLoadTasks.run(this);
+			AsyncLoadTasks.run(this, currentListID);
 		}
 	}
 
