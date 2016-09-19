@@ -11,7 +11,7 @@ import java.util.List;
  */
 class AsyncLoadTasks extends CommonAsyncTask {
 
-	String listID;
+	private final String listID;
 
 	AsyncLoadTasks(TasksActivity tasksSample, String listID) {
 		super(tasksSample);

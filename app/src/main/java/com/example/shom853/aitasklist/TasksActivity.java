@@ -58,7 +58,7 @@ public class TasksActivity extends AppCompatActivity
 	TaskItemAdapter adapter;
 	private ListView listView;
 
-	private String currentListID;
+	String currentListID;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

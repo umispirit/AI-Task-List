@@ -48,6 +48,28 @@ public class TaskItemAdapter extends ArrayAdapter<Task> {
 			checkbox.setChecked(false);
 		}
 
+		// create completed check box listener
+		checkbox.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+				// set setStatus to inverse
+				String status = one_task.getStatus();
+				if(status != null && status.equals("completed")){
+					one_task.setStatus("needsAction");
+					one_task.setCompleted(null);
+					// Task's completed attribute must be set to null when changing status from completed to not-completed because server will give an 400 error and the update won't be applied
+				}
+				else {
+					one_task.setStatus("completed");
+				}
+
+				AsyncUpdateTask.run((TasksActivity) getContext(), one_task);
+				// update listView
+				TaskItemAdapter.this.notifyDataSetChanged();
+			}
+		});
+
 		return convertView;
 
 	}
