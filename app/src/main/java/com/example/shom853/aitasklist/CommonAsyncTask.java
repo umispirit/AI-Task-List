@@ -19,17 +19,21 @@ abstract class CommonAsyncTask extends AsyncTask<Void, Void, Boolean> {
 	final TasksActivity activity;
 	final com.google.api.services.tasks.Tasks client;
 	private final View progressBar;
+	private final View syncButton;
 
 	CommonAsyncTask(TasksActivity activity) {
 		this.activity = activity;
 		client = activity.service;
-		progressBar = activity.findViewById(R.id.title_refresh_progress);
+		progressBar = activity.findViewById(R.id.action_sync_progress);
+		syncButton = activity.findViewById(R.id.action_sync_button);
 	}
 
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
 		activity.numAsyncTasks++;
+		syncButton.setVisibility(View.GONE);
+		syncButton.setEnabled(false);
 		progressBar.setVisibility(View.VISIBLE);
 	}
 
@@ -53,8 +57,11 @@ abstract class CommonAsyncTask extends AsyncTask<Void, Void, Boolean> {
 	@Override
 	protected final void onPostExecute(Boolean success) {
 		super.onPostExecute(success);
+		// if the task is the last task running in the background then set the visibility of the progress bar to GONE
 		if (0 == --activity.numAsyncTasks) {
 			progressBar.setVisibility(View.GONE);
+			syncButton.setVisibility(View.VISIBLE);
+			syncButton.setEnabled(true);
 		}
 		if (success) {
 			activity.refreshView();

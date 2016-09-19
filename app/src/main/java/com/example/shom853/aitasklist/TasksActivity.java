@@ -51,13 +51,14 @@ public class TasksActivity extends AppCompatActivity
 	final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
 	GoogleAccountCredential credential;
 
-	List<Task> tasksList;
-	TaskItemAdapter adapter;
 	com.google.api.services.tasks.Tasks service;
 	int numAsyncTasks;
+
+	List<Task> tasksList;
+	TaskItemAdapter adapter;
 	private ListView listView;
 
-	String currentListID;
+	private String currentListID;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -103,11 +104,11 @@ public class TasksActivity extends AppCompatActivity
 		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 		navigationView.setNavigationItemSelectedListener(this);
 
-		// get saved data
+		// get savedInstanceState data
 		// currently not saving data and using default list
 
 //		if(savedInstanceState != null){
-//			listID = savedInstanceState.getString(TASKLIST_ID);
+//			currentListID = savedInstanceState.getString(TASKLIST_ID);
 //			accountEmail = savedInstanceState.getString(ACCOUNT_EMAIL);
 //			listIndex = savedInstanceState.getInt(TASKLIST_INDEX);
 //		}
@@ -257,5 +258,9 @@ public class TasksActivity extends AppCompatActivity
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		drawer.closeDrawer(GravityCompat.START);
 		return true;
+	}
+
+	public void syncClick(View view){
+		AsyncLoadTasks.run(this, currentListID);
 	}
 }

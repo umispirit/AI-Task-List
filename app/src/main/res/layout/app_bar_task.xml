@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.shom853.aitasklist.TaskActivity">
+    tools:context="com.example.shom853.aitasklist.TasksActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -21,12 +21,20 @@
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <ProgressBar
-                android:id="@+id/title_refresh_progress"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:paddingRight="10dp"
-                android:layout_gravity="right"
+                android:id="@+id/action_sync_progress"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="end"
                 android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/action_sync_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:src="@drawable/ic_sync_white_36dp"
+                android:background="@android:color/transparent"
+                android:onClick="syncClick"/>
 
         </android.support.v7.widget.Toolbar>
 

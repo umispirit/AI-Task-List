@@ -14,6 +14,8 @@ import java.util.List;
 
 /**
  * Created by Sandy on 8/30/2016.
+ *
+ * This class is for the custom view for displaying the info of a simple Task
  */
 public class TaskItemAdapter extends ArrayAdapter<Task> {
 
